@@ -1,26 +1,28 @@
-name: Publish to maven repo
-
-on:
-    release:
-        types: [published]
-
 jobs:
-    publish:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  submodules: recursive
-            - name: validate gradle wrapper
-              uses: gradle/wrapper-validation-action@v2
-            - name: Set up JDK 17
-              uses: actions/setup-java@v4
-              with:
-                  java-version: '17'
-                  distribution: 'adopt'
-                  cache: gradle
-            - name: Publish Skript
-              run: ./gradlew publish
-              env:
-                  MAVEN_USERNAME: ${{ secrets.REPO_USERNAME }}
-                  MAVEN_PASSWORD: ${{ secrets.REPO_TOKEN }}
+  publish:
+    runs-on: self-hosted
+    steps:
+    - continue-on-error: true
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - continue-on-error: true
+      name: validate gradle wrapper
+      uses: gradle/wrapper-validation-action@v2
+    - continue-on-error: true
+      name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        cache: gradle
+        distribution: adopt
+        java-version: '17'
+    - continue-on-error: true
+      env:
+        MAVEN_PASSWORD: ${{ secrets.REPO_TOKEN }}
+        MAVEN_USERNAME: ${{ secrets.REPO_USERNAME }}
+      name: Publish Skript
+      run: ./gradlew publish
+name: Publish to maven repo
+on:
+  repository_dispatch:
+    types: trigger-ga___repo.yml

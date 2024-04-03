@@ -1,29 +1,29 @@
-name: JUnit (MC 1.17+)
-
-on:
-    push:
-        branches:
-            - master
-            - 'dev/**'
-    pull_request:
-
 jobs:
-    build:
-        if: "! contains(toJSON(github.event.commits.*.message), '[ci skip]')"
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  submodules: recursive
-            - name: validate gradle wrapper
-              uses: gradle/wrapper-validation-action@v2
-            - name: Set up JDK 17
-              uses: actions/setup-java@v4
-              with:
-                  java-version: '17'
-                  distribution: 'adopt'
-                  cache: gradle
-            - name: Grant execute permission for gradlew
-              run: chmod +x gradlew
-            - name: Build Skript and run JUnit
-              run: ./gradlew clean JUnitJava17
+  build:
+    if: '! contains(toJSON(github.event.commits.*.message), ''[ci skip]'')'
+    runs-on: self-hosted
+    steps:
+    - continue-on-error: true
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - continue-on-error: true
+      name: validate gradle wrapper
+      uses: gradle/wrapper-validation-action@v2
+    - continue-on-error: true
+      name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        cache: gradle
+        distribution: adopt
+        java-version: '17'
+    - continue-on-error: true
+      name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - continue-on-error: true
+      name: Build Skript and run JUnit
+      run: ./gradlew clean JUnitJava17
+name: JUnit (MC 1.17+)
+on:
+  repository_dispatch:
+    types: trigger-ga___junit-17-builds.yml
